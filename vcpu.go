@@ -130,11 +130,11 @@ func getQuota(token, tenent, location, url string) {
 	checkQuota(q.Values)
 }
 
-func checkQuota(q []*Limit) {
-	for _, l := range q {
-		if float32(l.CurrentValue)/float32(l.Limit) > 0.80 {
+func checkQuota(quota []*Limit) {
+	for _, q := range quota {
+		if float32(q.CurrentValue)/float32(q.Limit) > 0.80 {
 			s := fmt.Sprintf(`{"text": "@channel Azure \"%s\" : %d/%d quota used"}`,
-				l.Name.LocalizedValue, l.CurrentValue, l.Limit)
+				q.Name.LocalizedValue, q.CurrentValue, q.Limit)
 			r, err := sendMessage(s, os.Getenv("SLACK_WEBHOOK"))
 			errorPrint(err)
 			r.Body.Close()
