@@ -33,7 +33,7 @@ func main() {
 	if client.Authorizer, err = env.GetAuthorizer(); err != nil {
 		log.Fatalf("Authorisation fail: %v", err)
 	}
-	quota := func() {
+	go func() {
 		for {
 			usage, err := client.List(ctx, region)
 			if err != nil {
@@ -57,8 +57,8 @@ func main() {
 			time.Sleep(15 * time.Minute)
 			//fmt.Println("------------------------------------------")
 		}
-	}
-	go quota()
+	}()
+
 	http.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe(":2112", nil)
 }
